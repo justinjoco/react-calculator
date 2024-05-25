@@ -28,15 +28,17 @@ function App() {
 
   function handleOperatorButton(event){
     event.preventDefault()
-    setOperator(event.target.value)
    
     if (event.target.value === "="){
       let newTotal = evaluateExpression(total, operator, Number(display))
       setTotal(newTotal)
       setDisplay(newTotal)
     } else {
-      setTotal(Number(display))
-      setDisplay("")
+      setOperator(event.target.value)
+      if (display !== ""){
+        setTotal(Number(display))
+        setDisplay("")
+      }
     }
   }
   
