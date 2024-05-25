@@ -30,32 +30,13 @@ function App() {
     event.preventDefault()
     setOperator(event.target.value)
    
-    switch (event.target.value){
-      case "+":
-        setOperator("+")        
-        setTotal(Number(display))
-        setDisplay("")
-        break
-      case "-":
-        setOperator("-")
-        setTotal(Number(display))
-        setDisplay("")
-        break
-      case "*":
-        setOperator("*")
-        setTotal(Number(display))
-        setDisplay("")
-        break
-      case "/":
-        setOperator("/")
-        setTotal(Number(display))
-        setDisplay("")
-        break
-      case "=":
-        let newTotal = evaluateExpression(total, operator, Number(display))
-        setTotal(newTotal)
-        setDisplay(newTotal)
-        break
+    if (event.target.value === "="){
+      let newTotal = evaluateExpression(total, operator, Number(display))
+      setTotal(newTotal)
+      setDisplay(newTotal)
+    } else {
+      setTotal(Number(display))
+      setDisplay("")
     }
   }
   
