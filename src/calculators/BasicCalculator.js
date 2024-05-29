@@ -4,6 +4,7 @@ function BasicCalculator() {
     const totalRef = useRef(0)
     const currNumberRef = useRef(0)
     const currOperatorRef = useRef("+")
+    const description = "Results of each operation are immediately calculated and displayed. As a result, multiplication/division has the same precedence as addition/subtraction."
     const [display, setDisplay] = useState("0")
     const [error, setError] = useState("")
   
@@ -108,6 +109,7 @@ function BasicCalculator() {
     return (
       <div>
         <h1>Basic Calculator</h1>
+        <h4>{description}</h4>
           <h2>{display}</h2>
           <p>{error}</p>
           {numberButtons}

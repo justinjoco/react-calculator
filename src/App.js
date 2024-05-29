@@ -36,6 +36,10 @@ function App() {
       <BasicCalculator/>
       <BasicCalculatorMDAS/>
       <BasicCalculatorPMDAS/>
+      <br/>
+      <footer>
+        <b><i>The above calculators are implemented in React</i></b>
+      </footer>
     </div>
   );
 }

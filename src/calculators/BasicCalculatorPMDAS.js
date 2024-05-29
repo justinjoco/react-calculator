@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 
 function BasicCalculatorPMDAS() {
   const expressionRef = useRef("")
+  const description = "Full expression is shown and is calculated on equals button press. Parentheses takes precedence over multiplication/division, which takes precedence over addition/subtraction."
   const [display, setDisplay] = useState("0")
   const [error, setError] = useState("")
 
@@ -16,12 +17,64 @@ function BasicCalculatorPMDAS() {
 
   function handleEqualsButton(){
     const expression = expressionRef.current
-    const value = evaluateExpression(expression)
-    setDisplay(value)
+    try {
+      const value = String(evaluateExpression(expression))
+      expressionRef.current = value
+      setDisplay(value)
+    } catch(e){
+      setError("An error has occurred while parsing. Please clear the expression and try again.")
+    }
   }
 
   function evaluateExpression(expression){
+    let currNumber = 0
+    let currOperator = "+"
+    const stack = []
 
+    for (let i = 0 ; i <= expression.length; i ++){
+      let char = expression[i]
+      if (!isNaN(char)){
+        const number = Number(char)
+        currNumber = currNumber * 10 + number
+      }
+      else if (char === "("){
+        stack.push(currOperator)
+        currOperator = "+"
+      } else {
+        switch (currOperator){
+          case "-":
+            stack.push(-currNumber)
+            break
+          case "+":
+          case null:
+            stack.push(currNumber)
+            break
+          case "*":
+            stack.push(stack.pop() * currNumber)
+            break
+          case "/":
+            if (currNumber === 0) {
+              setError("Cannot evaluate expression because there is a division by zero")
+            } else {
+              stack.push(stack.pop() / currNumber)
+            }
+        }
+        currOperator = char
+        currNumber = 0
+        if (char === ")"){
+          while (!isNaN(stack[stack.length - 1])){
+            currNumber += stack.pop()
+          }
+          currOperator = stack.pop()
+        }
+      }
+    }
+
+    let total = 0
+    while (stack.length > 0){
+      total += stack.pop()
+    }
+    return total
   }
   
 
@@ -43,7 +96,8 @@ function BasicCalculatorPMDAS() {
   const clearButton = <button onClick={() => handleClearClick()}>CLR</button>
   return (
     <div>
-      <h1>Basic Calculator with MDAS</h1>
+      <h1>Basic Calculator with PMDAS</h1>
+        <h4>{description}</h4>
         <h2>{display}</h2>
         <p>{error}</p>
         {numberButtons}

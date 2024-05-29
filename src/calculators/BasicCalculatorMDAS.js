@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 
 function BasicCalculatorMDAS() {
     const expressionRef = useRef("")
+    const description = "Full expression is shown and is calculated on equals button press. Multiplication/division takes precedence over addition/subtraction."
     const [display, setDisplay] = useState("0")
     const [error, setError] = useState("")
   
@@ -86,6 +87,7 @@ function BasicCalculatorMDAS() {
     return (
       <div>
         <h1>Basic Calculator with MDAS</h1>
+          <h4>{description}</h4>
           <h2>{display}</h2>
           <p>{error}</p>
           {numberButtons}
