@@ -1,78 +1,87 @@
 import { useState, useRef } from 'react';
 
 function BasicCalculatorMDAS() {
-    const totalRef = useRef(0)
-    const currNumberRef = useRef(0)
-    const currOperatorRef = useRef("+")
+    const expressionRef = useRef("")
     const [display, setDisplay] = useState("0")
     const [error, setError] = useState("")
   
-    function handleNumberClick(e){
-      const number = Number(e.target.value)
-      let currNumber = currNumberRef.current
-  
-      currNumber = currNumber * 10 + number
-      setDisplay(String(currNumber))
-      currNumberRef.current = currNumber
+    function handleExpressionButton(e){
+      const character = e.target.value
+      let expression = expressionRef.current
+      
+      expression += character
+      setDisplay(expression)
+      expressionRef.current = expression
     }
   
-    function handleOperatorClick(e){
-      setError("")
-      const nextOperator = e.target.value
-      let total = totalRef.current
-      let currNumber = currNumberRef.current
-      let currOperator = currOperatorRef.current
-      
-      switch (currOperator) {
-        case "=":
-          break
-        case "+":
-          total += currNumber
-          break
-        case "*":
-          total *= currNumber
-          break
-        case "-":
-          total -= currNumber
-          break
-        case "/":
-          if (currNumber !== 0){
-            total /= currNumber
-          } else {
-            setError("You attempted to divide by zero. Please use another number")
-          }
-          break
-  
+    function handleEqualsButton(){
+      const expression = expressionRef.current
+      try {
+        const value = String(evaluateExpression(expression))
+        expressionRef.current = value
+        setDisplay(value)
+      } catch(e){
+        setError("An error has occurred while parsing. Please clear the expression and try again.")
       }
-  
-      const displayStr = Number.isInteger(total) ? String(total) : String(total.toFixed(2))
-      setDisplay(displayStr)
-      totalRef.current = total
-      currOperatorRef.current = nextOperator
-      currNumberRef.current = 0
     }
 
     function evaluateExpression(expression){
+      let currNumber = 0
+      let currOperator = "+"
+      const stack = []
 
+      for (let i = 0 ; i <= expression.length; i ++){
+        let char = expression[i]
+        if (isNaN(char)){
+          switch (currOperator){
+            case "-":
+              stack.push(-currNumber)
+              break
+            case "+":
+            case null:
+              stack.push(currNumber)
+              break
+            case "*":
+              stack.push(stack.pop() * currNumber)
+              break
+            case "/":
+              if (currNumber === 0) {
+                setError("Cannot evaluate expression because there is a division by zero")
+              } else {
+                stack.push(stack.pop() / currNumber)
+              }
+          }
+          currOperator = char
+          currNumber = 0
+        } else {
+          const number = Number(char)
+          currNumber = currNumber * 10 + number
+        }
+      }
+
+      let total = 0
+      while (stack.length > 0){
+        total += stack.pop()
+      }
+      return total
     }
     
   
     function handleClearClick(){
-      totalRef.current = 0
-      currNumberRef.current = 0
-      currOperatorRef.current = "+"
+      expressionRef.current = ""
       setDisplay("0")
       setError("")
     }
   
     const numberButtons = []
     for (let i = 0 ; i < 10; i ++){
-      numberButtons.push(<button key={`button${i}`} value={i} onClick={e => handleNumberClick(e)}>{i}</button>)
+      numberButtons.push(<button key={`button${i}`} value={i} onClick={e => handleExpressionButton(e)}>{i}</button>)
     }
-    const operators = ["+", "-", "*", "/", "="]
-    const operatorButtons = operators.map(operator => 
-      <button key={`button${operator}`} value={operator} onClick={e => handleOperatorClick(e)}>{operator}</button>)
-  
+    const operators = ["+", "-", "*", "/"]
+    const operatorButtons = operators.map(operator => <button key={`button${operator}`} value={operator} onClick={e => handleExpressionButton(e)}>{operator}</button>)
+    
+    const equalsButton = <button onClick={() => handleEqualsButton()}>=</button>
+
     const clearButton = <button onClick={() => handleClearClick()}>CLR</button>
     return (
       <div>
@@ -83,6 +92,7 @@ function BasicCalculatorMDAS() {
           <br/>
           {operatorButtons}
           <br/>
+          {equalsButton}
           {clearButton}
       </div>
     );
