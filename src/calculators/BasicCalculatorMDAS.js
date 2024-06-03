@@ -17,9 +17,9 @@ function BasicCalculatorMDAS() {
   
     function handleEqualsButton(){
       const expression = expressionRef.current
+      console.log(expression)
       try {
         const value = String(evaluateExpression(expression))
-        expressionRef.current = value
         setDisplay(value)
       } catch(e){
         setError("An error has occurred while parsing. Please clear the expression and try again.")

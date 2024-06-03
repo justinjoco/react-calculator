@@ -19,7 +19,6 @@ function BasicCalculatorPMDAS() {
     const expression = expressionRef.current
     try {
       const value = String(evaluateExpression(expression))
-      expressionRef.current = value
       setDisplay(value)
     } catch(e){
       setError("An error has occurred while parsing. Please clear the expression and try again.")
