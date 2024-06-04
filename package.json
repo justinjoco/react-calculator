@@ -13,12 +13,14 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "npm run format && npm run lint && react-scripts start",
+    "build": "npm run format && npm run lint && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "CI='' npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "lint": "eslint src/**/*.js",
+    "format": "prettier --write src/"
   },
   "eslintConfig": {
     "extends": [
@@ -39,6 +41,8 @@
     ]
   },
   "devDependencies": {
-    "gh-pages": "^6.1.1"
+    "eslint": "^8.57.0",
+    "gh-pages": "^6.1.1",
+    "prettier": "^3.3.0"
   }
 }

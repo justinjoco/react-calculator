@@ -1,113 +1,131 @@
-import { useState, useRef } from 'react';
+import { useState, useRef } from "react";
 
 function BasicCalculatorPMDAS() {
-  const expressionRef = useRef("")
-  const description = "Full expression is shown and is calculated on equals button press. Parentheses takes precedence over multiplication/division, which takes precedence over addition/subtraction."
-  const [display, setDisplay] = useState("0")
-  const [error, setError] = useState("")
+  const expressionRef = useRef("");
+  const description =
+    "Full expression is shown and is calculated on equals button press. Parentheses takes precedence over multiplication/division, which takes precedence over addition/subtraction.";
+  const [display, setDisplay] = useState("0");
+  const [error, setError] = useState("");
 
-  function handleExpressionButton(e){
-    const character = e.target.value
-    let expression = expressionRef.current
-    
-    expression += character
-    setDisplay(expression)
-    expressionRef.current = expression
+  function handleExpressionButton(e) {
+    const character = e.target.value;
+    let expression = expressionRef.current;
+
+    expression += character;
+    setDisplay(expression);
+    expressionRef.current = expression;
   }
 
-  function handleEqualsButton(){
-    const expression = expressionRef.current
+  function handleEqualsButton() {
+    const expression = expressionRef.current;
     try {
-      const value = String(evaluateExpression(expression))
-      setDisplay(value)
-    } catch(e){
-      setError("An error has occurred while parsing. Please clear the expression and try again.")
+      const value = String(evaluateExpression(expression));
+      setDisplay(value);
+    } catch (e) {
+      setError(
+        "An error has occurred while parsing. Please clear the expression and try again.",
+      );
     }
   }
 
-  function evaluateExpression(expression){
-    let currNumber = 0
-    let currOperator = "+"
-    const stack = []
+  function evaluateExpression(expression) {
+    let currNumber = 0;
+    let currOperator = "+";
+    const stack = [];
 
-    for (let i = 0 ; i <= expression.length; i ++){
-      let char = expression[i]
-      if (!isNaN(char)){
-        const number = Number(char)
-        currNumber = currNumber * 10 + number
-      }
-      else if (char === "("){
-        stack.push(currOperator)
-        currOperator = "+"
+    for (let i = 0; i <= expression.length; i++) {
+      let char = expression[i];
+      if (!isNaN(char)) {
+        const number = Number(char);
+        currNumber = currNumber * 10 + number;
+      } else if (char === "(") {
+        stack.push(currOperator);
+        currOperator = "+";
       } else {
-        switch (currOperator){
+        switch (currOperator) {
           case "-":
-            stack.push(-currNumber)
-            break
+            stack.push(-currNumber);
+            break;
           case "+":
           case null:
-            stack.push(currNumber)
-            break
+            stack.push(currNumber);
+            break;
           case "*":
-            stack.push(stack.pop() * currNumber)
-            break
+            stack.push(stack.pop() * currNumber);
+            break;
           case "/":
             if (currNumber === 0) {
-              setError("Cannot evaluate expression because there is a division by zero")
+              setError(
+                "Cannot evaluate expression because there is a division by zero",
+              );
             } else {
-              stack.push(stack.pop() / currNumber)
+              stack.push(stack.pop() / currNumber);
             }
         }
-        currOperator = char
-        currNumber = 0
-        if (char === ")"){
-          while (!isNaN(stack[stack.length - 1])){
-            currNumber += stack.pop()
+        currOperator = char;
+        currNumber = 0;
+        if (char === ")") {
+          while (!isNaN(stack[stack.length - 1])) {
+            currNumber += stack.pop();
           }
-          currOperator = stack.pop()
+          currOperator = stack.pop();
         }
       }
     }
 
-    let total = 0
-    while (stack.length > 0){
-      total += stack.pop()
+    let total = 0;
+    while (stack.length > 0) {
+      total += stack.pop();
     }
-    return total
-  }
-  
-
-  function handleClearClick(){
-    expressionRef.current = ""
-    setDisplay("0")
-    setError("")
+    return total;
   }
 
-  const numberButtons = []
-  for (let i = 0 ; i < 10; i ++){
-    numberButtons.push(<button key={`button${i}`} value={i} onClick={e => handleExpressionButton(e)}>{i}</button>)
+  function handleClearClick() {
+    expressionRef.current = "";
+    setDisplay("0");
+    setError("");
   }
-  const operators = ["+", "-", "*", "/", "(", ")"]
-  const operatorButtons = operators.map(operator => <button key={`button${operator}`} value={operator} onClick={e => handleExpressionButton(e)}>{operator}</button>)
-  
-  const equalsButton = <button onClick={() => handleEqualsButton()}>=</button>
 
-  const clearButton = <button onClick={() => handleClearClick()}>CLR</button>
+  const numberButtons = [];
+  for (let i = 0; i < 10; i++) {
+    numberButtons.push(
+      <button
+        key={`button${i}`}
+        value={i}
+        onClick={(e) => handleExpressionButton(e)}
+      >
+        {i}
+      </button>,
+    );
+  }
+  const operators = ["+", "-", "*", "/", "(", ")"];
+  const operatorButtons = operators.map((operator) => (
+    <button
+      key={`button${operator}`}
+      value={operator}
+      onClick={(e) => handleExpressionButton(e)}
+    >
+      {operator}
+    </button>
+  ));
+
+  const equalsButton = <button onClick={() => handleEqualsButton()}>=</button>;
+
+  const clearButton = <button onClick={() => handleClearClick()}>CLR</button>;
   return (
     <div>
       <h1>Basic Calculator with PMDAS</h1>
-        <h4>{description}</h4>
-        <h2>{display}</h2>
-        <p>{error}</p>
-        {numberButtons}
-        <br/>
-        {operatorButtons}
-        <br/>
-        {equalsButton}
-        {clearButton}
+      <h4>{description}</h4>
+      <h2>{display}</h2>
+      <p>{error}</p>
+      {numberButtons}
+      <br />
+      {operatorButtons}
+      <br />
+      {equalsButton}
+      {clearButton}
     </div>
   );
-  }
-  
-  export default BasicCalculatorPMDAS;
-  
+}
+
+export default BasicCalculatorPMDAS;

@@ -1,7 +1,7 @@
-import './App.css';
-import BasicCalculator from './calculators/BasicCalculator';
-import BasicCalculatorMDAS from './calculators/BasicCalculatorMDAS';
-import BasicCalculatorPMDAS from './calculators/BasicCalculatorPMDAS';
+import "./App.css";
+import BasicCalculator from "./calculators/BasicCalculator";
+import BasicCalculatorMDAS from "./calculators/BasicCalculatorMDAS";
+import BasicCalculatorPMDAS from "./calculators/BasicCalculatorPMDAS";
 
 /*
 Calcualtor
@@ -33,12 +33,14 @@ Display total when operator button is pressed
 function App() {
   return (
     <div className="App">
-      <BasicCalculator/>
-      <BasicCalculatorMDAS/>
-      <BasicCalculatorPMDAS/>
-      <br/>
+      <BasicCalculator />
+      <BasicCalculatorMDAS />
+      <BasicCalculatorPMDAS />
+      <br />
       <footer>
-        <b><i>The above calculators are implemented in React</i></b>
+        <b>
+          <i>The above calculators are implemented in React</i>
+        </b>
       </footer>
     </div>
   );
